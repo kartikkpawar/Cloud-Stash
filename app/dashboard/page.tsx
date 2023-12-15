@@ -15,7 +15,7 @@ async function DashBoard() {
     id: doc.id,
     filename: doc.data().filename || doc.id,
     fullname: doc.data().fullName,
-    timeStamp: new Date(doc.data().timestamp?.seconds * 1000) || null,
+    timestamp: new Date(doc.data().timestamp?.seconds * 1000) || null,
     downloadUrl: doc.data().downloadUrl,
     type: doc.data().type,
     size: doc.data().size,
