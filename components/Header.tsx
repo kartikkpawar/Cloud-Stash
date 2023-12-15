@@ -19,7 +19,7 @@ function Header() {
         </div>
         <h1 className="font-bold text-xl">Dropbox</h1>
       </Link>
-      <div className="flex justify-between px-5 space-x-2">
+      <div className="flex justify-between px-5 space-x-2 items-center">
         <Themetoggler />
         <UserButton afterSignOutUrl="/" />
         <SignedOut>
