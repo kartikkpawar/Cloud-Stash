@@ -1,6 +1,15 @@
 "use client";
+import { db, storage } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useState } from "react";
 import DropzoneComponent from "react-dropzone";
 
@@ -17,15 +26,37 @@ export default function Dropzone() {
       reader.onabort = () => console.log("File reading was aborted");
       reader.onerror = () => console.log("File reading has failed");
       reader.onload = async () => {
-        await uploadpost(file);
+        await uploadPost(file);
       };
       reader.readAsArrayBuffer(file);
     });
   };
 
-  const uploadpost = async (selectedFiles: File) => {
+  const uploadPost = async (selectedFile: File) => {
     if (loading || !user) return;
+
     setLoading(true);
+    const docRef = await addDoc(collection(db, "users", user.id, "files"), {
+      userId: user.id,
+      filename: selectedFile.name,
+      fullName: user.fullName,
+      profileImg: user.imageUrl,
+      timestamp: serverTimestamp(),
+      type: selectedFile.type,
+      size: selectedFile.size,
+    });
+    const fileRef = ref(storage, `users/${user.id}/files/${docRef.id}`);
+    uploadBytes(fileRef, selectedFile)
+      .then(async (snapshot) => {
+        const downloadUrl = await getDownloadURL(fileRef);
+        await updateDoc(doc(db, "users", user.id, "files", docRef.id), {
+          downloadUrl,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setLoading(false);
   };
 
   return (
