@@ -16,8 +16,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { TrashIcon } from "lucide-react";
+import { PencilIcon, TrashIcon } from "lucide-react";
 import { FileType } from "@/type";
+import { useAppStore } from "@/store/store";
+import { DeleteModal } from "../modals/DeleteModal";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,6 +35,24 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const [setIsDeleteModalOpen, setIsRenameModalOpen, setFileId, setFileName] =
+    useAppStore((state) => [
+      state.setIsDeleteModalOpen,
+      state.setIsRenameModalOpen,
+      state.setFileId,
+      state.setFilename,
+    ]);
+
+  const openDeleteModal = (fileId: string) => {
+    setIsDeleteModalOpen(true);
+    setFileId(fileId);
+  };
+  const openEditModal = (_fileId: string, _filename: string) => {
+    setIsRenameModalOpen(true);
+    setFileId(_fileId);
+    setFileName(_filename);
+  };
 
   return (
     <div className="rounded-md border">
@@ -62,17 +82,32 @@ export function DataTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
+                <DeleteModal />
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    {/* )} */}
+                    {cell.column.id === "filename" ? (
+                      <p
+                        className="underline  flex items-center text-blue-500 hover:cursor-pointer"
+                        onClick={() => {
+                          openEditModal(
+                            (row.original as FileType).id,
+                            (row.original as FileType).filename
+                          );
+                        }}
+                      >
+                        {cell.getValue() as string}
+                        <PencilIcon size={15} className="ml-2" />
+                      </p>
+                    ) : (
+                      flexRender(cell.column.columnDef.cell, cell.getContext())
+                    )}
                   </TableCell>
                 ))}
                 <TableCell key={(row.original as FileType).id}>
                   <Button
                     variant={"outline"}
                     onClick={() => {
-                      console.log("DELETE FILE", (row.original as FileType).id);
+                      openDeleteModal((row.original as FileType).id);
                     }}
                   >
                     <TrashIcon size={20} className="text-red-500" />
