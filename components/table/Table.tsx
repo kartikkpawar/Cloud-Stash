@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
 
   const shareFileUrl = async (fileId: string, userId: string) => {
     if (!fileId) return toast.error("Something went wrong");
-    const fileUrl = `${process.env.NEXT_PUBLIC_CLOUD_STASH_URL}/${userId}/${fileId}`;
+    const fileUrl = `${process.env.NEXT_PUBLIC_CLOUD_STASH_URL}/view/${userId}/${fileId}`;
     try {
       await navigator.clipboard.writeText(fileUrl);
       toast.success("Copied to clipboard");
