@@ -20,6 +20,7 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 import { FileType } from "@/type";
 import { useAppStore } from "@/store/store";
 import { DeleteModal } from "../modals/DeleteModal";
+import EditModal from "../modals/EditModal";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -83,6 +84,7 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 <DeleteModal />
+                <EditModal />
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {cell.column.id === "filename" ? (
