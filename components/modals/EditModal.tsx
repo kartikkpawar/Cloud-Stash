@@ -15,65 +15,109 @@ import { Input } from "../ui/input";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import toast from "react-hot-toast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function EditModal() {
-  const [setIsRenameModalOpen, isRenameModalOpen, fileId, filename] =
-    useAppStore((state) => [
-      state.setIsRenameModalOpen,
-      state.isRenameModalOpen,
+  const [setIsEditModal, isEditModalOpen, fileId, filename] = useAppStore(
+    (state) => [
+      state.setIsEditModal,
+      state.isEditModalOpen,
       state.fileId,
       state.filename,
-    ]);
+    ]
+  );
   const { user } = useUser();
   const [input, setInput] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
 
   const editFile = async () => {
     if (!fileId || !user) return;
-    const toastId = toast.loading("Renaming file...");
+    const toastId = toast.loading("Updating file...");
     try {
       await updateDoc(doc(db, "users", user.id, "files", fileId), {
         filename: input,
+        password: showPassword ? passwordInput : "",
       });
-      toast.success("File renamed successfully...", {
+      toast.success("File updated successfully...", {
         id: toastId,
       });
     } catch (error) {
-      console.log("Something went wrong");
       toast.error("Something went  wrong! Pls try again", {
         id: toastId,
       });
     } finally {
-      setIsRenameModalOpen(false);
+      setIsEditModal(false);
     }
+  };
+
+  const handlePassword = (e: any) => {
+    const value = e.target.value;
+    setPasswordInput(value);
   };
 
   return (
     <Dialog
-      open={isRenameModalOpen}
+      open={isEditModalOpen}
       onOpenChange={(isOpen) => {
-        setIsRenameModalOpen(isOpen);
+        setIsEditModal(isOpen);
       }}
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="pb-2">Rename The File</DialogTitle>
+          <DialogTitle className="pb-2">Edit File Information</DialogTitle>
         </DialogHeader>
-        <Input
-          id="link"
-          defaultValue={filename || ""}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDownCapture={(e) => {
-            if (e.key === "Enter") {
-              editFile();
-            }
-          }}
-        />
+        <div className="flex flex-col space-y-2">
+          <span>Filename</span>
+          <Input
+            id="link"
+            defaultValue={filename || ""}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDownCapture={(e) => {
+              if (e.key === "Enter") {
+                editFile();
+              }
+            }}
+          />
+        </div>
+        <div className="flex flex-col space-y-5">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="password-check"
+              className="h-5 w-5"
+              checked={showPassword}
+              onClick={() => {
+                setShowPassword(!showPassword);
+              }}
+            />
+            <label
+              htmlFor="password-check"
+              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Password protect file
+            </label>
+          </div>
+          {showPassword && (
+            <Input
+              id="link"
+              type="password"
+              placeholder="Enter password"
+              onChange={handlePassword}
+              value={passwordInput}
+              onKeyDownCapture={(e) => {
+                if (e.key === "Enter") {
+                  editFile();
+                }
+              }}
+            />
+          )}
+        </div>
         <div className="flex space-x-2 py-3">
           <Button
             size="sm"
             className="px-3 flex-1"
             variant="outline"
-            onClick={() => setIsRenameModalOpen(false)}
+            onClick={() => setIsEditModal(false)}
           >
             <span className="sr-only">Cancel</span>
             <span className="">Cancel</span>
@@ -84,8 +128,8 @@ export default function EditModal() {
             variant="outline"
             onClick={editFile}
           >
-            <span className="sr-only">Rename</span>
-            <span className="">Rename</span>
+            <span className="sr-only">Update</span>
+            <span className="">Update</span>
           </Button>
         </div>
       </DialogContent>
