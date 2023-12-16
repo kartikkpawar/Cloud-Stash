@@ -34,6 +34,7 @@ function TableWrapper({ skeletonFiles }: { skeletonFiles: FileType[] }) {
       downloadUrl: doc.data().downloadUrl,
       type: doc.data().type,
       size: doc.data().size,
+      password: doc.data().password || "",
     }));
     setIntialFiles(files);
   }, [docs]);

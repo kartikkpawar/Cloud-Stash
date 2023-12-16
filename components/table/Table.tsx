@@ -38,22 +38,32 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const [setIsDeleteModalOpen, setIsEditModal, setFileId, setFileName] =
-    useAppStore((state) => [
-      state.setIsDeleteModalOpen,
-      state.setIsEditModal,
-      state.setFileId,
-      state.setFilename,
-    ]);
+  const [
+    setIsDeleteModalOpen,
+    setIsEditModal,
+    setFileId,
+    setFileName,
+    setFilePassword,
+  ] = useAppStore((state) => [
+    state.setIsDeleteModalOpen,
+    state.setIsEditModal,
+    state.setFileId,
+    state.setFilename,
+    state.setFilePassword,
+  ]);
 
   const openDeleteModal = (fileId: string) => {
     setIsDeleteModalOpen(true);
     setFileId(fileId);
   };
-  const openEditModal = (_fileId: string, _filename: string) => {
+  const openEditModal = (fileId: string, fileName: string, password?: any) => {
     setIsEditModal(true);
-    setFileId(_fileId);
-    setFileName(_filename);
+    setFileId(fileId);
+    setFileName(fileName);
+
+    if (password) {
+      setFilePassword(password);
+    }
   };
 
   const shareFileUrl = async (fileId: string) => {
@@ -108,7 +118,8 @@ export function DataTable<TData, TValue>({
                         onClick={() => {
                           openEditModal(
                             (row.original as FileType).id,
-                            (row.original as FileType).filename
+                            (row.original as FileType).filename,
+                            (row.original as FileType)?.password
                           );
                         }}
                       >

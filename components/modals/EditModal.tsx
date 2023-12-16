@@ -18,25 +18,33 @@ import toast from "react-hot-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function EditModal() {
-  const [setIsEditModal, isEditModalOpen, fileId, filename] = useAppStore(
-    (state) => [
-      state.setIsEditModal,
-      state.isEditModalOpen,
-      state.fileId,
-      state.filename,
-    ]
-  );
+  const [
+    setIsEditModal,
+    isEditModalOpen,
+    fileId,
+    filename,
+    filePassword,
+    setFilePassword,
+  ] = useAppStore((state) => [
+    state.setIsEditModal,
+    state.isEditModalOpen,
+    state.fileId,
+    state.filename,
+    state.filePassword,
+    state.setFilePassword,
+  ]);
   const { user } = useUser();
   const [input, setInput] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
+  const [showPassword, setShowPassword] = useState(Boolean(filePassword));
+  const [passwordInput, setPasswordInput] = useState(filePassword);
 
   const editFile = async () => {
     if (!fileId || !user) return;
     const toastId = toast.loading("Updating file...");
+
     try {
       await updateDoc(doc(db, "users", user.id, "files", fileId), {
-        filename: input,
+        filename: input ? input : filename,
         password: showPassword ? passwordInput : "",
       });
       toast.success("File updated successfully...", {
@@ -48,6 +56,7 @@ export default function EditModal() {
       });
     } finally {
       setIsEditModal(false);
+      setFilePassword("");
     }
   };
 
@@ -103,6 +112,7 @@ export default function EditModal() {
               type="password"
               placeholder="Enter password"
               onChange={handlePassword}
+              //@ts-ignore
               value={passwordInput}
               onKeyDownCapture={(e) => {
                 if (e.key === "Enter") {
