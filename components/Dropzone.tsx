@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import DropzoneComponent from "react-dropzone";
 
 export default function Dropzone() {
-  const MAX_SIZE = 270020; //2MB
+  const MAX_SIZE = 2970020;
 
   const [loading, setLoading] = useState(false);
   const { isLoaded, isSignedIn, user } = useUser();
