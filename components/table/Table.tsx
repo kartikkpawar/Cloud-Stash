@@ -73,6 +73,7 @@ export function DataTable<TData, TValue>({
                   </TableHead>
                 );
               })}
+              <TableHead>Delete</TableHead>
             </TableRow>
           ))}
         </TableHeader>
