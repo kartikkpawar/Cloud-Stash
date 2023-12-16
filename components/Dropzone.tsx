@@ -12,6 +12,7 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useState } from "react";
 import DropzoneComponent from "react-dropzone";
+import toast from "react-hot-toast";
 
 export default function Dropzone() {
   const MAX_SIZE = 2970020;
@@ -36,6 +37,8 @@ export default function Dropzone() {
     if (loading || !user) return;
 
     setLoading(true);
+    const toastId = toast.loading("Uploading file...");
+
     const docRef = await addDoc(collection(db, "users", user.id, "files"), {
       userId: user.id,
       filename: selectedFile.name,
@@ -49,13 +52,23 @@ export default function Dropzone() {
     uploadBytes(fileRef, selectedFile)
       .then(async (snapshot) => {
         const downloadUrl = await getDownloadURL(fileRef);
-        await updateDoc(doc(db, "users", user.id, "files", docRef.id), {
-          downloadUrl,
-        });
+        try {
+          await updateDoc(doc(db, "users", user.id, "files", docRef.id), {
+            downloadUrl,
+          });
+        } catch (error) {
+          toast.error("Something went  wrong! Pls try again", {
+            id: toastId,
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
+        toast.error("Something went  wrong! Pls try again", {
+          id: toastId,
+        });
       });
+    toast.success("File Uploaded Successfully...", { id: toastId });
     setLoading(false);
   };
 

@@ -57,6 +57,13 @@ export const columns: ColumnDef<FileType>[] = [
     accessorKey: "downloadUrl",
     header: "Link",
     cell: ({ renderValue, ...props }) => {
+      if (!renderValue()) {
+        return (
+          <span className="text-blue-500 hover:text-blue-600 animate-pulse">
+            Loading...
+          </span>
+        );
+      }
       return (
         <a
           href={renderValue() as string}

@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+import toast from "react-hot-toast";
 
 export default function EditModal() {
   const [setIsRenameModalOpen, isRenameModalOpen, fileId, filename] =
@@ -24,21 +25,25 @@ export default function EditModal() {
       state.filename,
     ]);
   const { user } = useUser();
-  const [updatingFile, setUpdatingFile] = useState(false);
   const [input, setInput] = useState("");
 
   const editFile = async () => {
     if (!fileId || !user) return;
+    const toastId = toast.loading("Renaming file...");
     try {
-      setUpdatingFile(true);
       await updateDoc(doc(db, "users", user.id, "files", fileId), {
         filename: input,
       });
+      toast.success("File renamed successfully...", {
+        id: toastId,
+      });
     } catch (error) {
       console.log("Something went wrong");
+      toast.error("Something went  wrong! Pls try again", {
+        id: toastId,
+      });
     } finally {
       setIsRenameModalOpen(false);
-      setUpdatingFile(false);
     }
   };
 
@@ -79,12 +84,8 @@ export default function EditModal() {
             variant="outline"
             onClick={editFile}
           >
-            <span className="sr-only">
-              {updatingFile ? "Updating File" : "Rename"}
-            </span>
-            <span className="">
-              {updatingFile ? "Updating File" : "Rename"}
-            </span>
+            <span className="sr-only">Rename</span>
+            <span className="">Rename</span>
           </Button>
         </div>
       </DialogContent>
