@@ -18,7 +18,7 @@ export default function Dropzone() {
   const MAX_SIZE = 2970020;
 
   const [loading, setLoading] = useState(false);
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { user } = useUser();
 
   const onDropHandler = (acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
