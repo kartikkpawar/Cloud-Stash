@@ -35,6 +35,7 @@ function TableWrapper({ skeletonFiles }: { skeletonFiles: FileType[] }) {
       type: doc.data().type,
       size: doc.data().size,
       password: doc.data().password || "",
+      userId: doc.data().userId,
     }));
     setIntialFiles(files);
   }, [docs]);

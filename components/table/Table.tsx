@@ -56,19 +56,22 @@ export function DataTable<TData, TValue>({
     setIsDeleteModalOpen(true);
     setFileId(fileId);
   };
-  const openEditModal = (fileId: string, fileName: string, password?: any) => {
+  const openEditModal = (
+    fileId: string,
+    fileName: string,
+    password?: string
+  ) => {
     setIsEditModal(true);
     setFileId(fileId);
     setFileName(fileName);
-
     if (password) {
       setFilePassword(password);
     }
   };
 
-  const shareFileUrl = async (fileId: string) => {
+  const shareFileUrl = async (fileId: string, userId: string) => {
     if (!fileId) return toast.error("Something went wrong");
-    const fileUrl = `${process.env.NEXT_PUBLIC_CLOUD_STASH_URL}/${fileId}`;
+    const fileUrl = `${process.env.NEXT_PUBLIC_CLOUD_STASH_URL}/${userId}/${fileId}`;
     try {
       await navigator.clipboard.writeText(fileUrl);
       toast.success("Copied to clipboard");
@@ -135,7 +138,10 @@ export function DataTable<TData, TValue>({
                   <Button
                     variant={"outline"}
                     onClick={() => {
-                      shareFileUrl((row.original as FileType).id);
+                      shareFileUrl(
+                        (row.original as FileType).id,
+                        (row.original as FileType).userId as string
+                      );
                     }}
                   >
                     <Share2 size={20} />
