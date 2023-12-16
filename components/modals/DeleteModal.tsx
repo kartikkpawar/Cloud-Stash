@@ -11,15 +11,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { db, storage } from "@/firebase";
 import { useAppStore } from "@/store/store";
+import { useUser } from "@clerk/nextjs";
+import { deleteDoc, doc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { useState } from "react";
 
 export function DeleteModal() {
-  const [setIsDeleteModalOpen, isDeleteModalOpen] = useAppStore((state) => [
-    state.setIsDeleteModalOpen,
-    state.isDeleteModalOpen,
-  ]);
+  const [setIsDeleteModalOpen, isDeleteModalOpen, fileId] = useAppStore(
+    (state) => [
+      state.setIsDeleteModalOpen,
+      state.isDeleteModalOpen,
+      state.fileId,
+    ]
+  );
+  const { user } = useUser();
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const deleteFile = async () => {};
+  const deleteFile = async () => {
+    if (!user || !fileId) return;
+    const fileRef = ref(storage, `users/${user.id}/files/${fileId}`);
+    try {
+      setIsDeleting(true);
+      await deleteObject(fileRef);
+      await deleteDoc(doc(db, "users", user.id, "files", fileId));
+    } catch (error) {
+      console.log("Something went wrong", error);
+    } finally {
+      setIsDeleteModalOpen(false);
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <Dialog
@@ -52,8 +75,10 @@ export function DeleteModal() {
             variant="destructive"
             onClick={deleteFile}
           >
-            <span className="sr-only">Delete</span>
-            <span className="">Delete</span>
+            <span className="sr-only">
+              {isDeleting ? "Deleting File" : "Delete"}
+            </span>
+            <span className="">{isDeleting ? "Deleting File" : "Delete"}</span>
           </Button>
         </div>
       </DialogContent>
