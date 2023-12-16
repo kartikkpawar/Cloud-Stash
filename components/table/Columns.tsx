@@ -4,7 +4,6 @@ import { COLOR_EXTENSION_MAP } from "@/constants";
 import { FileType } from "@/type";
 import { ColumnDef } from "@tanstack/react-table";
 import { PencilIcon } from "lucide-react";
-import Link from "next/link";
 import prettyBytes from "pretty-bytes";
 import { FileIcon, defaultStyles } from "react-file-icon";
 
@@ -30,19 +29,6 @@ export const columns: ColumnDef<FileType>[] = [
   {
     accessorKey: "filename",
     header: "Filename",
-    cell: ({ renderValue, ...props }) => {
-      return (
-        <p
-          className="underline  flex items-center text-blue-500 hover:cursor-pointer"
-          onClick={() => {
-            console.log("EDIT FILE", (props.row.original as FileType).id);
-          }}
-        >
-          {props.cell.getValue() as string}
-          <PencilIcon size={15} className="ml-2" />
-        </p>
-      );
-    },
   },
   {
     accessorKey: "timestamp",
