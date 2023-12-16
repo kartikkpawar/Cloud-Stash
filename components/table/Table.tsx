@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { PencilIcon, Share2, TrashIcon } from "lucide-react";
 import { FileType } from "@/type";
 import { useAppStore } from "@/store/store";
 import { DeleteModal } from "../modals/DeleteModal";
@@ -37,10 +37,10 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const [setIsDeleteModalOpen, setIsRenameModalOpen, setFileId, setFileName] =
+  const [setIsDeleteModalOpen, setIsEditModal, setFileId, setFileName] =
     useAppStore((state) => [
       state.setIsDeleteModalOpen,
-      state.setIsRenameModalOpen,
+      state.setIsEditModal,
       state.setFileId,
       state.setFilename,
     ]);
@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
     setFileId(fileId);
   };
   const openEditModal = (_fileId: string, _filename: string) => {
-    setIsRenameModalOpen(true);
+    setIsEditModal(true);
     setFileId(_fileId);
     setFileName(_filename);
   };
@@ -74,6 +74,7 @@ export function DataTable<TData, TValue>({
                 );
               })}
               <TableHead>Delete</TableHead>
+              <TableHead>Share</TableHead>
             </TableRow>
           ))}
         </TableHeader>
@@ -106,6 +107,16 @@ export function DataTable<TData, TValue>({
                     )}
                   </TableCell>
                 ))}
+                <TableCell key={(row.original as FileType).id}>
+                  <Button
+                    variant={"outline"}
+                    onClick={() => {
+                      openDeleteModal((row.original as FileType).id);
+                    }}
+                  >
+                    <Share2 size={20} />
+                  </Button>
+                </TableCell>
                 <TableCell key={(row.original as FileType).id}>
                   <Button
                     variant={"outline"}
