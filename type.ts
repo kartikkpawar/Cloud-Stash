@@ -7,4 +7,5 @@ export type FileType = {
   type: string;
   size: string;
   password?: string;
+  userId?: string;
 };
