@@ -15,6 +15,9 @@ interface AppState {
 
   filePassword: string | null;
   setFilePassword: (password: string) => void;
+
+  isPasswordModalOpen: boolean;
+  setIsPasswordModal: (open: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()((set) => ({
@@ -34,4 +37,8 @@ export const useAppStore = create<AppState>()((set) => ({
 
   filePassword: "",
   setFilePassword: (filePassword: string) => set((state) => ({ filePassword })),
+
+  isPasswordModalOpen: false,
+  setIsPasswordModal: (open: boolean) =>
+    set((state) => ({ isPasswordModalOpen: open })),
 }));
