@@ -7,15 +7,15 @@ export default function Home() {
       <div className="flex flex-col lg:flex-row items-center bg-[#1e1919] dark:bg-slate-800">
         <div className="p-10 flex flex-col bg-[#2B2929] dark:bg-slate-800 text-white space-y-5">
           <h1 className="text-5xl font-bold">
-            Welcomwe to DropBox <br />
+            Welcome to Cloud Stash <br />
             Storing everthing for youu and your business needs. All in one place
           </h1>
           <p className="pb-20">
-            Enhance your persoonal storage with Dropbox, offering a simple and
-            efficient way to upload, organize, and access files from anywhere.
-            Securely store important documents and media, and experience the
-            convinience if easy file management and sharing in the centralized
-            solution
+            Enhance your personal storage with Cloud Stash, offering a simple
+            and efficient way to upload, organize, and access files from
+            anywhere. Securely store important documents and media, and
+            experience the convinience if easy file management and sharing in
+            the centralized solution
           </p>
           <Link
             href="/dashboard"
