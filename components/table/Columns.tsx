@@ -3,6 +3,7 @@
 import { COLOR_EXTENSION_MAP } from "@/constants";
 import { FileType } from "@/type";
 import { ColumnDef } from "@tanstack/react-table";
+import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 import prettyBytes from "pretty-bytes";
 import { FileIcon, defaultStyles } from "react-file-icon";
@@ -29,10 +30,35 @@ export const columns: ColumnDef<FileType>[] = [
   {
     accessorKey: "filename",
     header: "Filename",
+    cell: ({ renderValue, ...props }) => {
+      return (
+        <p
+          className="underline  flex items-center text-blue-500 hover:cursor-pointer"
+          onClick={() => {
+            console.log("EDIT FILE", (props.row.original as FileType).id);
+          }}
+        >
+          {props.cell.getValue() as string}
+          <PencilIcon size={15} className="ml-2" />
+        </p>
+      );
+    },
   },
   {
     accessorKey: "timestamp",
     header: "Date Added",
+    cell: ({ renderValue, ...props }) => {
+      return (
+        <div className="flex flex-col">
+          <div className="text-sm">
+            {(props.cell.getValue() as Date).toDateString()}
+          </div>
+          <div className="text-xs text-gray-500">
+            {(props.cell.getValue() as Date).toLocaleTimeString()}
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "size",
@@ -46,13 +72,13 @@ export const columns: ColumnDef<FileType>[] = [
     header: "Link",
     cell: ({ renderValue, ...props }) => {
       return (
-        <Link
+        <a
           href={renderValue() as string}
           target="_blank"
           className="underline text-blue-500 hover:text-blue-600"
         >
           Download
-        </Link>
+        </a>
       );
     },
   },
