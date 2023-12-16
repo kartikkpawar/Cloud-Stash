@@ -21,6 +21,7 @@ import { FileType } from "@/type";
 import { useAppStore } from "@/store/store";
 import { DeleteModal } from "../modals/DeleteModal";
 import EditModal from "../modals/EditModal";
+import toast from "react-hot-toast";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,6 +54,18 @@ export function DataTable<TData, TValue>({
     setIsEditModal(true);
     setFileId(_fileId);
     setFileName(_filename);
+  };
+
+  const shareFileUrl = async (fileId: string) => {
+    if (!fileId) return toast.error("Something went wrong");
+    const fileUrl = `${process.env.NEXT_PUBLIC_CLOUD_STASH_URL}/${fileId}`;
+    try {
+      await navigator.clipboard.writeText(fileUrl);
+      toast.success("Copied to clipboard");
+    } catch (err) {
+      toast.error("Something went wrong, Check logs for file url");
+      console.log("FILE_URL Visit\n", fileUrl);
+    }
   };
 
   return (
@@ -111,7 +124,7 @@ export function DataTable<TData, TValue>({
                   <Button
                     variant={"outline"}
                     onClick={() => {
-                      openDeleteModal((row.original as FileType).id);
+                      shareFileUrl((row.original as FileType).id);
                     }}
                   >
                     <Share2 size={20} />
