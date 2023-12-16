@@ -8,7 +8,7 @@ export default function Home() {
         <div className="p-10 flex flex-col bg-[#2B2929] dark:bg-slate-800 text-white space-y-5">
           <h1 className="text-5xl font-bold">
             Welcome to Cloud Stash <br />
-            Storing everthing for youu and your business needs. All in one place
+            Storing everthing for you and your business needs. All in one place
           </h1>
           <p className="pb-20">
             Enhance your personal storage with Cloud Stash, offering a simple
