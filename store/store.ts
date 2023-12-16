@@ -12,6 +12,9 @@ interface AppState {
 
   filename: string | null;
   setFilename: (filename: string) => void;
+
+  filePassword: string | null;
+  setFilePassword: (password: string) => void;
 }
 
 export const useAppStore = create<AppState>()((set) => ({
@@ -28,4 +31,7 @@ export const useAppStore = create<AppState>()((set) => ({
 
   filename: "",
   setFilename: (filename: string) => set((state) => ({ filename })),
+
+  filePassword: "",
+  setFilePassword: (filePassword: string) => set((state) => ({ filePassword })),
 }));
